@@ -12,19 +12,19 @@ describe('pandok tests', () => {
 
         cy.visit("/dashboard")
             .its("location.href")
-            .should("equals", "https://yp-stage.essentialsln.com/dashboard")
+            .should("equals", "https://yp-dev.essentialsln.com/dashboard")
 
     });
 
     it('Նյութերի մուտք ներքին գումարով/գնով - 1. Գումարով', () => {
 
         cy.visit('/operations/materials').then(window => {
-            expect(window.location.href).to.be.equal("https://yp-stage.essentialsln.com/operations/materials")
+            expect(window.location.href).to.be.equal("https://yp-dev.essentialsln.com/operations/materials")
             expect(window.document.title).to.contain("Նյութերի մուտք և տեղափոխում")
         })
 
-        cy.intercept("https://yp-stage-api.essentialsln.com/api/dish").as("dishReq")
-        cy.intercept("https://yp-stage-api.essentialsln.com/api/product").as("productReq")
+        cy.intercept("https://yp-dev-api.essentialsln.com/api/dish").as("dishReq")
+        cy.intercept("https://yp-dev-api.essentialsln.com/api/product").as("productReq")
 
         cy.wait("@dishReq")
         cy.wait("@productReq")
@@ -141,12 +141,12 @@ describe('pandok tests', () => {
     it('Ճաշացուցակ չեկլիստ', () => {
 
         cy.visit('/references/menu').then(window => {
-            expect(window.location.href).to.be.equal("https://yp-stage.essentialsln.com/references/menu")
+            expect(window.location.href).to.be.equal("https://yp-dev.essentialsln.com/references/menu")
             expect(window.document.title).to.contain("Ճաշացուցակ")
         })
 
-        cy.intercept("https://yp-stage-api.essentialsln.com/api/dish").as("dishReq")
-        cy.intercept("https://yp-stage-api.essentialsln.com/api/dish/bulk?restaurants=7").as("restRequest")
+        cy.intercept("https://yp-dev-api.essentialsln.com/api/dish").as("dishReq")
+        cy.intercept("https://yp-dev-api.essentialsln.com/api/dish/bulk?restaurants=7").as("restRequest")
 
 
         cy.wait("@dishReq")

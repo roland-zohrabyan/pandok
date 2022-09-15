@@ -9,7 +9,6 @@ module.exports = defineConfig({
   watchForFileChanges: false,
   downloadsFolder: "cypress/downloads",
   includeShadowDom: true,
-  experimentalShadowDomSupport: true,
   viewportWidth: 1920,
   viewportHeight: 1080,
   screenshotOnRunFailure: true,

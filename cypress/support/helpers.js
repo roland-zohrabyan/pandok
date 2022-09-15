@@ -8,12 +8,12 @@ export const getRandomInt = (max) => {
 
 export const getRandomOptionIndex = (max) => {
 
-    
+
     return Math.floor(Math.random() * (max - 1)) + 1;
 }
 
 // cy.get('#group').then((ele) => {
 //     cy.get('input', {
-//     withinSubject: ele,
-// })
+//         withinSubject: ele,
+//     })
 // })
