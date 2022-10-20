@@ -35,8 +35,6 @@ describe('pandok tests', () => {
     cy.wait("@dishListReq2", { timeout: 25000 })
 
 
-    let hallTextValue
-
     // selecting a hall
     cy.contains('ՍՐԱՀ 1')
       .click()
@@ -58,13 +56,13 @@ describe('pandok tests', () => {
         cy.contains(dishArray[k]).click()
       })
       .then(() => {
-        cy.get("[role='tooltip'] > div > div:nth-last-child(2) > em").then($el => {
-          servicePerc = $el.text().slice(0, -1)
+        cy.get("[role='tooltip'] > div > div:nth-last-child(2)").then($el => {
+          servicePerc = $el.text().replace("%", "")
         })
       })
       .then(() => {
-        cy.get("[role='tooltip'] > div > div:nth-last-child(1) > em").then($el => {
-          discountPerc = $el.text().slice(0, -1)
+        cy.get("[role='tooltip'] > div > div:nth-last-child(1)").then($el => {
+          discountPerc = $el.text().replace("%", "")
         })
       })
 
@@ -88,13 +86,11 @@ describe('pandok tests', () => {
         cy.get('.MuiContainer-root > div > div:nth-child(6) tr > td:nth-child(2)')
           .eq(k)
           .click()
-          // .invoke('css', 'border').should('equal', "2px solid rgb(79, 139, 148)")
           .then($el => {
             dishPrice = $el.text()
           })
       })
 
-    // cy.contains('Հավելումներ').should('exist')
 
     let dishQuantity
     cy.get(".MuiContainer-root > div > div:nth-child(7) > div:nth-child(3)")
@@ -105,8 +101,6 @@ describe('pandok tests', () => {
         dishQuantity = $el.text()
       })
       .click()
-
-    cy.then(() => { console.log(dishQuantity) })
 
     cy.contains("Enter").click()
 
@@ -121,7 +115,6 @@ describe('pandok tests', () => {
       })
 
     cy.contains("Անձերի թիվը").next().click()
-
     cy.contains("Ընդունել").click()
 
     cy.contains("button > span", "Հաշիվ").click()
@@ -129,7 +122,6 @@ describe('pandok tests', () => {
 
     cy.contains("Մարել").click()
     cy.contains("Հաշիվը մարված է").should('exist')
-
 
 
   }) // it

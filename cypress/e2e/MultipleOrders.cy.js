@@ -1,3 +1,6 @@
+import { verifyResultComplex } from "../support/helpers"
+
+
 describe('pandok tests', () => {
 
     let fixtureData
@@ -46,22 +49,22 @@ describe('pandok tests', () => {
             }
         });
 
-        let servicePerc
-        let discountPerc
+        let servicePercTable1
+        let discountPercTable1
         //selecting a table
         cy.get('.MuiContainer-root > div > div:nth-child(4) button')
             .contains("1-39") //hard code
             // .should('have.css', 'color', 'rgb(0, 0, 0)')
             .click()
-            // .invoke('attr', 'class').should('contain', "MuiButton-outlinedPrimary")
+            .invoke('attr', 'class').should('contain', "MuiButton-outlinedPrimary")
             .then(() => {
-                cy.get("[role='tooltip'] > div > div:nth-last-child(2) > em").then($el => {
-                    servicePerc = $el.text()
+                cy.get("[role='tooltip'] > div > div:nth-last-child(2)").then($el => {
+                    servicePercTable1 = $el.text().replace("%", "")
                 })
             })
             .then(() => {
-                cy.get("[role='tooltip'] > div > div:nth-last-child(1) > em").then($el => {
-                    discountPerc = $el.text()
+                cy.get("[role='tooltip'] > div > div:nth-last-child(1)").then($el => {
+                    discountPercTable1 = $el.text().replace("%", "")
                 })
             })
 
@@ -75,13 +78,14 @@ describe('pandok tests', () => {
         cy.contains("ԽՈՀԱՆՈՑ").click()
 
         // selecting dish section
-        cy.then(() => Cypress._.random(0, 7 - 1))
+        cy.then(() => Cypress._.random(0, 6 - 1))
             .then((k) => {
-                const dishArray = [" խորտիկ", "աղցան", "ապուր", "տաք ուտեստ", "մանղալ", "թոնիր", "ձկնեղեն"]
+                const dishArray = [" խորտիկ", "ապուր", "տաք ուտեստ", "մանղալ", "թոնիր", "ձկնեղեն"]
                 cy.contains(dishArray[k]).click()
             })
 
-        let dishPrice
+        let table1 = {}
+        //let dishPriceArrayTable1 = []
         // selecting dish(es)
         cy.get(".MuiContainer-root > div > div:nth-child(6) tr")
             .should('have.length.greaterThan', 0)
@@ -93,19 +97,18 @@ describe('pandok tests', () => {
                     .click()
                     // .invoke('css', 'border').should('equal', "2px solid rgb(79, 139, 148)")
                     .then($el => {
-                        dishPrice = $el.text()
+                        table1 = { price: [$el.text()] }
                     })
             })
 
         // cy.contains('Հավելումներ').should('exist')
 
-        let dishQuantity
         cy.get(".MuiContainer-root > div > div:nth-child(7) > div:nth-child(3)")
             .children()
             .children()
             .contains(Cypress._.random(1, 9))
             .then($el => {
-                dishQuantity = $el.text()
+                table1 = { ...table1, quantity: [$el.text()] }
             })
             .click()
 
@@ -115,11 +118,15 @@ describe('pandok tests', () => {
             .parent()
             .siblings("div:nth-last-child(1)")
             .then($el => {
-                let actResult = $el.text().replace(/\s/g, "")
-                let netPrice = parseInt(dishPrice * dishQuantity)
-                let expResult = netPrice + (netPrice * parseInt(servicePerc) / 100) - (netPrice * parseInt(discountPerc) / 100)
-                expect(actResult).to.be.equal(expResult.toString())
+                // let actResult = $el.text().replace(/\s/g, "")
+                // let netPrice = parseInt(dishPrice * dishQuantity)
+                // let expResult = netPrice + (netPrice * parseInt(servicePercTable1) / 100) - (netPrice * parseInt(discountPercTable1) / 100)
+                // expect(actResult).to.be.equal(expResult.toString())
+                verifyResultComplex($el, table1, servicePercTable1, discountPercTable1) // change to servicePercTable1, discountPercTable1
+
             })
+
+        // cy.pause()
 
         cy.contains("Անձերի թիվը").next().click()
         // /*\d*$
@@ -141,24 +148,32 @@ describe('pandok tests', () => {
             }
         });
 
-        let servicePerc2
-        let discountPerc2
+        // cy.wait(5000)
+
+        let servicePercTable2
+        let discountPercTable2
         //selecting a table
         cy.get('.MuiContainer-root > div > div:nth-child(4) button')
+            // .pause()
             .contains("1-59") //hard code
+            .wait(5000)
+            // .pause()
+            // .scrollIntoView()
             // .should('have.css', 'color', 'rgb(0, 0, 0)')
             .click()
+            // .pause()
             // .invoke('attr', 'class').should('contain', "MuiButton-outlinedPrimary")
             .then(() => {
-                cy.get("[role='tooltip'] > div > div:nth-last-child(2) > em").then($el => {
-                    servicePerc2 = $el.text()
+                cy.get("[role='tooltip'] > div > div:nth-last-child(2)").then($el => {
+                    servicePercTable2 = $el.text().replace("%", "")
                 })
             })
             .then(() => {
-                cy.get("[role='tooltip'] > div > div:nth-last-child(1) > em").then($el => {
-                    discountPerc2 = $el.text()
+                cy.get("[role='tooltip'] > div > div:nth-last-child(1)").then($el => {
+                    discountPercTable2 = $el.text().replace("%", "")
                 })
             })
+
 
         cy.get('body').then(() => {
             if (Cypress.$("p:contains('Ենթախմբեր')").length) {
@@ -170,13 +185,12 @@ describe('pandok tests', () => {
         cy.contains("ԽՈՀԱՆՈՑ").click()
 
         // selecting dish section
-        cy.then(() => Cypress._.random(0, 7 - 1))
+        cy.then(() => Cypress._.random(0, 6 - 1))
             .then((k) => {
-                const dishArray = [" խորտիկ", "աղցան", "ապուր", "տաք ուտեստ", "մանղալ", "թոնիր", "ձկնեղեն"]
+                const dishArray = [" խորտիկ", "ապուր", "տաք ուտեստ", "մանղալ", "թոնիր", "ձկնեղեն"]
                 cy.contains(dishArray[k]).click()
             })
-
-        let dishPrice2
+        let table2 = {}
         // selecting dish(es)
         cy.get(".MuiContainer-root > div > div:nth-child(6) tr")
             .should('have.length.greaterThan', 0)
@@ -188,32 +202,33 @@ describe('pandok tests', () => {
                     .click()
                     // .invoke('css', 'border').should('equal', "2px solid rgb(79, 139, 148)")
                     .then($el => {
-                        dishPrice2 = $el.text()
+                        table2 = { price: [$el.text()] }
                     })
             })
-
+        // cy.pause()
         // cy.contains('Հավելումներ').should('exist')
 
-        let dishQuantity2
         cy.get(".MuiContainer-root > div > div:nth-child(7) > div:nth-child(3)")
             .children()
             .children()
             .contains(Cypress._.random(1, 9))
             .then($el => {
-                dishQuantity2 = $el.text()
+                table2 = { ...table2, quantity: [$el.text()] }
             })
             .click()
 
         cy.contains("Enter").click()
+        // cy.pause()
 
         cy.contains('div', 'Ընդամենը')
             .parent()
             .siblings("div:nth-last-child(1)")
             .then($el => {
-                let actResult2 = $el.text().replace(/\s/g, "")
-                let netPrice2 = parseInt(dishPrice2 * dishQuantity2)
-                let expResult2 = netPrice2 + (netPrice2 * parseInt(servicePerc2) / 100) - (netPrice2 * parseInt(discountPerc2) / 100)
-                expect(actResult2).to.be.equal(expResult2.toString())
+                // let actResult2 = $el.text().replace(/\s/g, "")
+                // let netPrice2 = parseInt(dishPrice2 * dishQuantity2)
+                // let expResult2 = netPrice2 + (netPrice2 * parseInt(servicePercTable2) / 100) - (netPrice2 * parseInt(discountPercTable2) / 100)
+                // expect(actResult2).to.be.equal(expResult2.toString())
+                verifyResultComplex($el, table2, servicePercTable2, discountPercTable2) // change to servicePercTable2, discountPercTable2
             })
 
         cy.contains("Անձերի թիվը").next().click()
@@ -253,13 +268,13 @@ describe('pandok tests', () => {
         cy.contains("ԽՈՀԱՆՈՑ").click()
 
         // selecting dish section
-        cy.then(() => Cypress._.random(0, 7 - 1))
+        cy.then(() => Cypress._.random(0, 6 - 1))
             .then((k) => {
-                const dishArray = [" խորտիկ", "աղցան", "ապուր", "տաք ուտեստ", "մանղալ", "թոնիր", "ձկնեղեն"]
+                const dishArray = [" խորտիկ", "ապուր", "տաք ուտեստ", "մանղալ", "թոնիր", "ձկնեղեն"]
                 cy.contains(dishArray[k]).click()
             })
 
-        let dishPrice3
+        // let dishPriceArrayTable1 = [] // isn't needed because it's already declared
         // selecting dish(es)
         cy.get(".MuiContainer-root > div > div:nth-child(6) tr")
             .should('have.length.greaterThan', 0)
@@ -271,19 +286,19 @@ describe('pandok tests', () => {
                     .click()
                     // .invoke('css', 'border').should('equal', "2px solid rgb(79, 139, 148)")
                     .then($el => {
-                        dishPrice3 = $el.text()
+                        table1 = { ...table1, price: [...table1.price, $el.text()] }
                     })
             })
 
         // cy.contains('Հավելումներ').should('exist')
 
-        let dishQuantity3
+        // let dishQuantityArrayTable1 // isn't needed because it's already declared
         cy.get(".MuiContainer-root > div > div:nth-child(7) > div:nth-child(3)")
             .children()
             .children()
             .contains(Cypress._.random(1, 9))
             .then($el => {
-                dishQuantity3 = $el.text()
+                table1 = { ...table1, quantity: [...table1.quantity, $el.text()] }
             })
             .click()
 
@@ -293,17 +308,13 @@ describe('pandok tests', () => {
             .parent()
             .siblings("div:nth-last-child(1)")
             .then($el => {
-                let actResult3 = $el.text().replace(/\s/g, "")
 
-                // let netPrice3 = parseInt(dishPrice * dishQuantity) // to remove
+                // let actResult3 = $el.text().replace(/\s/g, "")
+                // let totalNetPrice3 = parseInt(dishPrice * dishQuantity) + parseInt(dishPrice3 * dishQuantity3)
+                // let expResult3 = totalNetPrice3 + (totalNetPrice3 * parseInt(servicePercTable1) / 100) - (totalNetPrice3 * parseInt(discountPercTable1) / 100)
+                // expect(actResult3).to.be.equal(expResult3.toString())
+                verifyResultComplex($el, table1, servicePercTable1, discountPercTable1) // change to servicePercTable1, discountPercTable1
 
-                let totalNetPrice3 = parseInt(dishPrice * dishQuantity) + parseInt(dishPrice3 * dishQuantity3)
-
-                let expResult3 = totalNetPrice3 + (totalNetPrice3 * parseInt(servicePerc) / 100) - (totalNetPrice3 * parseInt(discountPerc) / 100)
-                // 400 * 4 + 2600 * 3 + (9400 * 10 / 100) - (9400 * 0 / 100) = 10340
-
-
-                expect(actResult3).to.be.equal(expResult3.toString())
             })
 
         cy.contains("Անձերի թիվը").next().click()
@@ -343,7 +354,7 @@ describe('pandok tests', () => {
 
         cy.contains("Մարել").click()
         cy.wait("@pay", { timeout: 25000 })
-        cy.contains("Հաշիվը մարված է").should('exist')
+        // cy.contains("Հաշիվը մարված է").should('exist')
 
         cy.contains("Մարած-զբաղված").click()
         cy.contains("Սեղանը զբաղված է").should('exist')
@@ -373,7 +384,7 @@ describe('pandok tests', () => {
                 cy.contains('p', "Ենթախմբեր").next().click();
             }
         });
-        cy.pause()
+        // cy.pause()
 
         cy.contains("button > span", "Հաշիվ").click()
         cy.wait("@print_bill", { timeout: 25000 })
@@ -396,3 +407,12 @@ describe('pandok tests', () => {
     }) // it
 
 }) // describe
+
+
+
+
+/* 
+
+
+
+*/
