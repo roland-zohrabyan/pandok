@@ -3,8 +3,8 @@ const { defineConfig } = require('cypress')
 module.exports = defineConfig({
   projectId: 'f77xn6',
   env: {
-    username: 'super',
-    password: '000000'
+    username: '', // removed for security reasons
+    password: '' // removed for security reasons
   },
   watchForFileChanges: false,
   downloadsFolder: "cypress/downloads",
@@ -22,7 +22,7 @@ module.exports = defineConfig({
   chromeWebSecurity: false,
   defaultCommandTimeout: 20000,
   e2e: {
-    baseUrl: 'https://yp-dev.essentialsln.com',
+    baseUrl: '', // removed for security reasons
     experimentalSessionAndOrigin: true,
     specPattern: 'cypress/e2e/**/*.{js,jsx,ts,tsx}',
   },
